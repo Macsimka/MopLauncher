@@ -1,18 +1,6 @@
 {
   "files": [
     {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy85Zm90ejE4OGV0OHdvbmwvcGFuZGF3b3ctMzIuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "pandawow-32.dll",
-      "hash": "CAC5501CEC250C2024E9AE389B9BA0C7",
-      "size": 190464
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9weDA0YjVhNm44ZnZuaDEvcGFuZGF3b3ctNjQuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "pandawow-64.dll",
-      "hash": "75D0E4DEC079CA4DACCB81B75BA92FB9",
-      "size": 206336
-    },
-    {
       "url": "aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL3VjP2V4cG9ydD1kb3dubG9hZCZjb25maXJtPW5vX2FudGl2aXJ1cyZpZD0xdGFDZS1MYmtiTU81OFhqbVBJeXhfRVZMWE5iRVpPbjU=",
       "fileName": "PandaWoW-64.exe",
       "hash": "3991E6701DE9C7DC4A88B09EDCA4E352",
@@ -23,6 +11,18 @@
       "fileName": "PandaWoW-32.exe",
       "hash": "31FAE41FB7B5C5D0A1F145707672774A",
       "size": 13151792
+    },
+    {
+      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9kOGQ1eWJrdHQ3ams4czcvcGFuZGF3b3ctMzIuZGxsP2RsPTAmcmF3PTE=",
+      "fileName": "pandawow-32.dll",
+      "hash": "2F24FAC27053010840551705970A845A",
+      "size": 190464
+    },
+    {
+      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9qMXdpdWlmeHJwbnJxc2wvcGFuZGF3b3ctNjQuZGxsP2RsPTAmcmF3PTE=",
+      "fileName": "pandawow-64.dll",
+      "hash": "F5BD89075D7C46BD6EFDD70EE4EFE0BA",
+      "size": 201728
     }
   ]
 }
