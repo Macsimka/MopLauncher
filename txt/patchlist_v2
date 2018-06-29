@@ -13,24 +13,6 @@
       "size": 13151792
     },
     {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9kOGQ1eWJrdHQ3ams4czcvcGFuZGF3b3ctMzIuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "pandawow-32.dll",
-      "hash": "2F24FAC27053010840551705970A845A",
-      "size": 190464
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9qMXdpdWlmeHJwbnJxc2wvcGFuZGF3b3ctNjQuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "pandawow-64.dll",
-      "hash": "F5BD89075D7C46BD6EFDD70EE4EFE0BA",
-      "size": 201728
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy93YW9zbW1wbTExZ3YyY2EvZGl2eGRlY29kZXIuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "divxdecoder.dll",
-      "hash": "57E72CAE12091DAFA29A8E4DB8B4F1D1",
-      "size": 413696
-    },
-    {
       "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9ia3V1OXhhbGhubHoybHQvTW92aWVQcm94eS5leGU/ZGw9MCZyYXc9MQ==",
       "fileName": "MovieProxy.exe",
       "hash": "F39774A53E9D1F49FAB3C4895513B7A9",
@@ -41,6 +23,24 @@
       "fileName": "msvcr80.dll",
       "hash": "1169436EE42F860C7DB37A4692B38F0E",
       "size": 632656
+    },
+    {
+      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy93YW9zbW1wbTExZ3YyY2EvZGl2eGRlY29kZXIuZGxsP2RsPTAmcmF3PTE=",
+      "fileName": "divxdecoder.dll",
+      "hash": "57E72CAE12091DAFA29A8E4DB8B4F1D1",
+      "size": 413696
+    },
+    {
+      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9kOGQ1eWJrdHQ3ams4czcvcGFuZGF3b3ctMzIuZGxsP2RsPTAmcmF3PTE=",
+      "fileName": "pandawow-32.dll",
+      "hash": "7FB5E9B816B8F91C34A997BDA5535D64",
+      "size": 193536
+    },
+    {
+      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9qMXdpdWlmeHJwbnJxc2wvcGFuZGF3b3ctNjQuZGxsP2RsPTAmcmF3PTE=",
+      "fileName": "pandawow-64.dll",
+      "hash": "F5F9F45A48BE3B3BBABC073B0FDDEE98",
+      "size": 205312
     }
   ]
 }
