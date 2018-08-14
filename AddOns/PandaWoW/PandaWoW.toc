@@ -3,4 +3,4 @@
 ## Version: 1.0
 ## SavedVariables: 
 
-CrossFactionBG\CrossFactionBG.xml
+CrossFactionBG.xml
