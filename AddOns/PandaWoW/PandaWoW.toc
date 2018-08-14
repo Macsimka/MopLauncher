@@ -1,0 +1,6 @@
+## Interface: 50407
+## Title: PandaWoW
+## Version: 1.0
+## SavedVariables: 
+
+CrossFactionBG\CrossFactionBG.xml
