@@ -55,6 +55,30 @@
         "F5F9F45A48BE3B3BBABC073B0FDDEE98"
       ],
       "size": 205312
+    },
+    {
+      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvUGFuZGFXb1cudG9j",
+      "fileName": "PandaWoW.toc",
+      "hash": [
+        "F71FF3E2F69939976C659521ACED96FB"
+      ],
+      "size": 94
+    },
+    {
+      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcueG1s",
+      "fileName": "CrossFactionBG.xml",
+      "hash": [
+        "C4E4E1403786541ADB13670E1C9C3A06"
+      ],
+      "size": 577
+    },
+    {
+      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcubHVh",
+      "fileName": "CrossFactionBG.lua",
+      "hash": [
+        "0EBD630C278AA703E271AC51F4831D22"
+      ],
+      "size": 2559
     }
   ]
 }
