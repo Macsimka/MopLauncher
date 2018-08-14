@@ -58,7 +58,7 @@
     },
     {
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvUGFuZGFXb1cudG9j",
-      "fileName": "AddOns\\PandaWoW\\PandaWoW.toc",
+      "fileName": "PandaWoW.toc",
       "hash": [
         "F71FF3E2F69939976C659521ACED96FB"
       ],
@@ -66,7 +66,7 @@
     },
     {
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcueG1s",
-      "fileName": "AddOns\\PandaWoW\\CrossFactionBG.xml",
+      "fileName": "CrossFactionBG.xml",
       "hash": [
         "C4E4E1403786541ADB13670E1C9C3A06"
       ],
@@ -74,7 +74,7 @@
     },
     {
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcubHVh",
-      "fileName": "AddOns\\PandaWoW\\CrossFactionBG.lua",
+      "fileName": "CrossFactionBG.lua",
       "hash": [
         "0EBD630C278AA703E271AC51F4831D22"
       ],
