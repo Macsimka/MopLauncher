@@ -60,9 +60,9 @@
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvUGFuZGFXb1cudG9j",
       "fileName": "PandaWoW.toc",
       "hash": [
-        "F71FF3E2F69939976C659521ACED96FB"
+        "7DA4749E7377DDB83ED8B92F094DC0FA"
       ],
-      "size": 94
+      "size": 120
     },
     {
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcueG1s",
@@ -76,9 +76,9 @@
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcubHVh",
       "fileName": "CrossFactionBG.lua",
       "hash": [
-        "0EBD630C278AA703E271AC51F4831D22"
+        "944B11B084DCFBFC6608EC673FF02780"
       ],
-      "size": 2559
+      "size": 5250
     }
   ]
 }

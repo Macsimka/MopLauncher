@@ -1,6 +1,6 @@
-## Interface: 50407
+## Interface: 50400
 ## Title: PandaWoW
 ## Version: 1.0
-## SavedVariables: 
+## SavedVariablesPerCharacter: IsCrossChecked
 
 CrossFactionBG.xml
