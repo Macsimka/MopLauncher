@@ -118,32 +118,20 @@ function boolToNumber(value)
     return value and 1 or 0;
 end
 
+function roundMap(mapId)
+    return mapId >= 0 and mapId or 0;
+end
+
 function JoinCross(self, _bgId)
     local role = GetRoleNumber();
     local groupQue = boolToNumber(UnitIsGroupLeader('player')and self:GetName()=='partyCrossButton' and GetNumGroupMembers() > 1);
     
     if (_bgId == 32) then
-        local black = "";
+        local mapID1 = roundMap(GetBlacklistMap(1));
+        local mapID2 = roundMap(GetBlacklistMap(2));
         
-        local mapID1 = GetBlacklistMap(1);
-        local mapID2 = GetBlacklistMap(2);
-        
-        if mapID1 == -1 then
-            mapID1 = 0;
-        end
-        
-        if mapID2 == -1 then
-            mapID2 = 0;
-        end
-        
-        if (mapID1 >= 0 and mapID2 >= 0) then
-            black = mapID1.." "..mapID2;
-        elseif (mapID1 >= 0) then
-            black = mapID1;
-        elseif (mapID2 >= 0) then
-            black = mapID2;
-        end
-        
+        local black = mapID1.." "..mapID2;
+
         SendChatMessage(".join cross_faction ".._bgId.." "..role.." "..black.." "..groupQue, "GUILD");
         return;
     end
