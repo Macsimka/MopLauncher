@@ -114,8 +114,13 @@ local function GetRoleNumber()
     return role;
 end
 
+function boolToNumber(value)
+    return value and 1 or 0;
+end
+
 function JoinCross(self, _bgId)
     local role = GetRoleNumber();
+    local groupQue = boolToNumber(UnitIsGroupLeader('player')and self:GetName()=='partyCrossButton' and GetNumGroupMembers() > 1);
     
     if (_bgId == 32) then
         local black = "";
@@ -123,25 +128,25 @@ function JoinCross(self, _bgId)
         local mapID1 = GetBlacklistMap(1);
         local mapID2 = GetBlacklistMap(2);
         
-        if (mapID1 > 0 and mapID2 > 0) then
+        if mapID1 == -1 then
+            mapID1 = 0;
+        end
+        
+        if mapID2 == -1 then
+            mapID2 = 0;
+        end
+        
+        if (mapID1 >= 0 and mapID2 >= 0) then
             black = mapID1.." "..mapID2;
-        elseif (mapID1 > 0) then
+        elseif (mapID1 >= 0) then
             black = mapID1;
-        elseif (mapID2 > 0) then
+        elseif (mapID2 >= 0) then
             black = mapID2;
         end
         
-		if UnitIsGroupLeader('player')and self:GetName()=='partyCrossButton' and GetNumGroupMembers() > 1 then
-			SendChatMessage(".join cross_faction_group ".._bgId.." "..role.." "..black, "GUILD");
-		else
-			SendChatMessage(".join cross_faction ".._bgId.." "..role.." "..black, "GUILD");
-		end
+        SendChatMessage(".join cross_faction ".._bgId.." "..role.." "..black.." "..groupQue, "GUILD");
         return;
     end
-    if UnitIsGroupLeader('player')and self:GetName()=='partyCrossButton' and GetNumGroupMembers() > 1 then
-		SendChatMessage(".join cross_faction_group ".._bgId.." "..role, "GUILD");
-	else
-		SendChatMessage(".join cross_faction ".._bgId.." "..role, "GUILD")
-	end
-    --SendAddonMessage("PandaWoWUI_BG", ".join_cross|i".._bgId.."|r"..role.."|b"..black.."|", "INSTANCE_CHAT");
+    
+    SendChatMessage(".join cross_faction ".._bgId.." "..role.." 0 0 "..groupQue, "GUILD");
 end
