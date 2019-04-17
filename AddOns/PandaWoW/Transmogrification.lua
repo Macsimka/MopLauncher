@@ -97,7 +97,7 @@ function PackInventoryLocation(container, slot, equipment, bank, bags, voidStora
 	return location;
 end
 
-local function AddEquippableItem(useTable, inventorySlot, container, slot)
+local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
     local itemID, link, _
     if container == VOID_CONTAINER then
         _, link = GetItemInfo(GetVoidItemInfo(slot))
@@ -115,13 +115,17 @@ local function AddEquippableItem(useTable, inventorySlot, container, slot)
 	local isPlayer = not isBank and not isVoid
 	if not isBags then container = nil end
 
-	local _, _, _, _, _, itemClass, _, _, equipSlot = GetItemInfo(link)
-    if itemClass == BATTLE_PET_SOURCE_2 or itemClass == QUESTS_LABEL then return end -- en/ru
+	local _, _, _, _, _, _, itemSubClass, _, equipSlot = GetItemInfo(link)
+    if itemSubClass == BATTLE_PET_SOURCE_2 or itemSubClass == QUESTS_LABEL then return end -- en/ru
 
 	local location = PackInventoryLocation(container, slot, isPlayer, isBank, isBags, isVoid);
 
-    if equipLocation[equipSlot] == inventorySlot or equipLocation["INVTYPE_WEAPONOFFHAND"] == inventorySlot
-    and useTable[location] == nil then
+    if not customEnabled and inventorySlot == 17 and equipSlot ~= mies then 
+        useTable[location] = nil
+        return
+    end
+
+    if equipLocation[equipSlot] == inventorySlot and useTable[location] == nil then
         useTable[location] = itemID;
 	end
 end
@@ -137,7 +141,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
 
     for container = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
         for slot = 1, GetContainerNumSlots(container) do
-            AddEquippableItem(useTable, inventorySlot, container, slot)
+            AddEquippableItem(useTable, mies, inventorySlot, container, slot)
         end
     end
 
@@ -145,21 +149,21 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
 
     -- scan bank main frame (data is only available when bank is opened)
     for slot = 1, _G.NUM_BANKGENERIC_SLOTS do
-        AddEquippableItem(useTable, inventorySlot, BANK_CONTAINER, slot)
+        AddEquippableItem(useTable, mies, inventorySlot, BANK_CONTAINER, slot)
     end
 
     -- scan bank containers
     for bankContainer = 1, _G.NUM_BANKBAGSLOTS do
         local container = _G.ITEM_INVENTORY_BANK_BAG_OFFSET + bankContainer
         for slot = 1, GetContainerNumSlots(container) or 0 do
-            AddEquippableItem(useTable, inventorySlot, container, slot)
+            AddEquippableItem(useTable, mies, inventorySlot, container, slot)
         end
     end
 
     -- scan void
     for voidSlot = 1, 80 do -- VOID_STORAGE_MAX
         if GetVoidItemInfo(voidSlot) then
-            AddEquippableItem(useTable, inventorySlot, VOID_CONTAINER, voidSlot)
+            AddEquippableItem(useTable, mies, inventorySlot, VOID_CONTAINER, voidSlot)
         end
     end
 
@@ -202,6 +206,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
               or mainItemSubClass == mail and (itemSubClass ~= mainItemSubClass)
               or mainItemSubClass == leather and (itemSubClass ~= mainItemSubClass)
               or mainItemSubClass == daggers and (itemSubClass ~= mainItemSubClass)
+              or mainItemSubClass == shields and (itemSubClass ~= shields)
               or mainItemSubClass == fists and (itemSubClass ~= mainItemSubClass)
               or (mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces) and (itemSubClass == twoHmaces or itemSubClass == twoHaxes or itemSubClass == twoHswords or itemSubClass == daggers or itemSubClass == fists)
               or (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows) and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows))
