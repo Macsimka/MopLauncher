@@ -120,7 +120,7 @@ local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
 
 	local location = PackInventoryLocation(container, slot, isPlayer, isBank, isBags, isVoid);
 
-    if not customEnabled and inventorySlot == 17 and equipSlot ~= mies then 
+    if not customEnabled and (inventorySlot == 17 or inventorySlot == 16) and equipSlot ~= mies then
         useTable[location] = nil
         return
     end
@@ -181,7 +181,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
         playerClass = playerClass:lower()
         for location, itemId in pairs(useTable) do
             if itemId == invItemId then useTable[location] = nil; end
-            local _, link, itemRarity, _, _, _, itemSubClass, _, equipSlot = GetItemInfo(itemId);
+            local _, link, itemRarity, _, _, _, itemSubClass, _, equipSlot, texture = GetItemInfo(itemId);
 
             -- We need to check tooltip of items to tmog if we are able to wear
             --i.e it will hide armor from another classes but will show weapons that are unable to wear
@@ -190,26 +190,30 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
             for i=1, GameTooltip:NumLines()do
                 local tooltipText = _G['GameTooltipTextLeft' .. i]:GetText():lower()
                 -- crappy and limited regex but it works
-                local _, _, class1, class2, class3, class4 = string.find(tooltipText,string.gsub(ITEM_CLASSES_ALLOWED:lower(), "%%s", "([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+)"))
+                local _, _, class1, class2, class3, class4, class5, class6, class7 = string.find(tooltipText,string.gsub(ITEM_CLASSES_ALLOWED:lower(), "%%s", "([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+)"))
 
                 if (class1 and class1 ~= playerClass)
-                or (class2 and class2 ~= playerClass)
-                or (class3 and class3 ~= playerClass)
-                or (class4 and class4 ~= playerClass) then
+                and (class2 and class2 ~= playerClass)
+                and (class3 and class3 ~= playerClass)
+                and (class4 and class4 ~= playerClass)
+                and (class5 and class5 ~= playerClass)
+                and (class6 and class6 ~= playerClass)
+                and (class7 and class7 ~= playerClass) then
                     useTable[location] = nil;
                 end
             end
             GameTooltip:Hide()
 
             -- Hide lower armor type items and legendary items
-            if (mainItemSubClass == plate and (itemSubClass ~= mainItemSubClass)
-              or mainItemSubClass == mail and (itemSubClass ~= mainItemSubClass)
-              or mainItemSubClass == leather and (itemSubClass ~= mainItemSubClass)
+            if (mainItemSubClass == plate or mainItemSubClass == mail or mainItemSubClass == leather)and (itemSubClass ~= mainItemSubClass)
               or mainItemSubClass == daggers and (itemSubClass ~= mainItemSubClass)
-              or mainItemSubClass == shields and (itemSubClass ~= shields)
+              or mainItemSubClass == shields and (itemSubClass ~= mainItemSubClass)
+              or (itemSubClass == polearms or itemSubClass == staves) and (itemSubClass ~= mainItemSubClass and mainItemSubClass ~= staves and mainItemSubClass ~= polearms)
+              or (mainItemSubClass == polearms or mainItemSubClass == staves) and (mainItemSubClass ~= itemSubClass and itemSubClass ~= staves and itemSubClass ~= polearms)
+              or string.find(texture:lower(), 'fishing')
               or mainItemSubClass == fists and (itemSubClass ~= mainItemSubClass)
               or (mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces) and (itemSubClass == twoHmaces or itemSubClass == twoHaxes or itemSubClass == twoHswords or itemSubClass == daggers or itemSubClass == fists)
-              or (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows) and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows))
+              or (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows) and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows)
               or itemRarity == ITEM_QUALITY_LEGENDARY then
                 useTable[location] = nil;
             end
