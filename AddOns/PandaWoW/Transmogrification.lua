@@ -187,19 +187,32 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
             --i.e it will hide armor from another classes but will show weapons that are unable to wear
             GameTooltip:SetOwner(UIParent,'ANCHOR_NONE')
             GameTooltip:SetHyperlink(link)
-            for i=1, GameTooltip:NumLines()do
+            local pattern = string.gsub(ITEM_CLASSES_ALLOWED:lower(), "%%s", "(.+)")
+            for i = 1, GameTooltip:NumLines() do
                 local tooltipText = _G['GameTooltipTextLeft' .. i]:GetText():lower()
-                -- crappy and limited regex but it works
-                local _, _, class1, class2, class3, class4, class5, class6, class7 = string.find(tooltipText,string.gsub(ITEM_CLASSES_ALLOWED:lower(), "%%s", "([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+),? ?([^,+]+)"))
-
-                if (class1 and class1 ~= playerClass)
-                and (class2 and class2 ~= playerClass)
-                and (class3 and class3 ~= playerClass)
-                and (class4 and class4 ~= playerClass)
-                and (class5 and class5 ~= playerClass)
-                and (class6 and class6 ~= playerClass)
-                and (class7 and class7 ~= playerClass) then
-                    useTable[location] = nil;
+                local _, _, classes = string.find(tooltipText, pattern)
+                if classes then
+                    local c, c1, c2, c3, c4, c5, c6, c7 = 0, "", "", "", "", "", "", ""
+                    for j = 1, #classes do
+                        local chr = strsub(classes, j, j+1)
+                        if chr~=", " then
+                            chr = strsub(classes, j, j)
+                            if c==0 then c1=c1 .. chr
+                            elseif c==1 then c2=c2 .. chr
+                            elseif c==2 then c3=c3 .. chr
+                            elseif c==3 then c4=c4 .. chr
+                            elseif c==4 then c5=c5 .. chr
+                            elseif c==5 then c6=c6 .. chr
+                            elseif c==6 then c7=c7 .. chr
+                            end
+                        else c=c+1 end
+                    end
+                    classes = {c1, c2, c3, c4, c5, c6, c7}
+                    for j, k in pairs(classes) do
+                        k = gsub(k,'^ ?(.*)','%1')
+                        if k == playerClass then break end
+                        if j == #classes then useTable[location] = nil; end
+                    end
                 end
             end
             GameTooltip:Hide()
