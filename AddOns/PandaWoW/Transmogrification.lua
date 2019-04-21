@@ -6,8 +6,8 @@ Transmogrication = {};
 local customEnabled = nil;
 
 local _G = _G
-local GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, GetSpellInfo = 
-      GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, GetSpellInfo
+local GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, GetSpellInfo, strsub, gsub = 
+      GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, GetSpellInfo, string.sub, string.gsub
 local bor, lshift = bit.bor, bit.lshift;
 local NUM_BAG_SLOTS, BACKPACK_CONTAINER, BANK_CONTAINER = _G.NUM_BAG_SLOTS, _G.BACKPACK_CONTAINER, _G.BANK_CONTAINER;
 
@@ -120,12 +120,15 @@ local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
 
 	local location = PackInventoryLocation(container, slot, isPlayer, isBank, isBags, isVoid);
 
-    if not customEnabled and (inventorySlot == 17 or inventorySlot == 16) and equipSlot ~= mies then
+    if not customEnabled and equipSlot ~= mies 
+    and (inventorySlot == 17 or inventorySlot == 16) then -- offhand fix
         useTable[location] = nil
         return
     end
 
-    if equipLocation[equipSlot] == inventorySlot and useTable[location] == nil then
+    if (equipLocation[equipSlot] == inventorySlot
+    or inventorySlot == 16 and equipLocation[equipSlot] == 18) -- wand fix
+    and useTable[location] == nil then
         useTable[location] = itemID;
 	end
 end
@@ -251,11 +254,13 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
                 equipSlot = "INVTYPE_WEAPON"
             elseif mies == "INVTYPE_2HWEAPON" and equipSlot == "INVTYPE_WEAPON" then
                 equipSlot = "INVTYPE_2HWEAPON"
-            -- Allow main hands trans into one hands and vice versa
+            -- Need serverside fix
+            --[[ Allow main hands trans into one hands and vice versa
             elseif mies == "INVTYPE_WEAPON" and equipSlot == "INVTYPE_WEAPONMAINHAND" then
                 equipSlot = "INVTYPE_WEAPON"
             elseif mies == "INVTYPE_WEAPONMAINHAND" and equipSlot == "INVTYPE_WEAPON" then
                 equipSlot = "INVTYPE_WEAPONMAINHAND"
+            ]]
             -- Allow offhands trans into shields and vice versa
             elseif mies == "INVTYPE_HOLDABLE" and equipSlot == "INVTYPE_SHIELD" then
                 equipSlot = "INVTYPE_HOLDABLE"
@@ -275,14 +280,18 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
                 useTable[location] = nil;
             -- 2h NOT ALLOWED TO daggers/fists
             elseif (mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces)
-              and itemSubClass == daggers or itemSubClass == fists then
+              and (itemSubClass == daggers or itemSubClass == fists) then
                 useTable[location] = nil;
             -- 1h/2h > 1h/2h
             elseif (mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces 
-             or mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces)
+             or (mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces))
               and itemSubClass ~= twoHswords and itemSubClass ~= twoHaxes and itemSubClass ~= twoHmaces
               and itemSubClass ~= oneHswords and itemSubClass ~= oneHaxes and itemSubClass ~= oneHmaces
               and itemSubClass ~= daggers and itemSubClass ~= fists then
+                useTable[location] = nil;
+            -- Hide wands from bows/crossbows/guns slot
+            elseif (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows)
+             and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows) then
                 useTable[location] = nil;
             end
 
