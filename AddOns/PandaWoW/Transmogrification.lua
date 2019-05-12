@@ -52,7 +52,7 @@ notifyUser:RegisterEvent"CHAT_MSG_ADDON"
 notifyUser:RegisterEvent"PLAYER_ENTERING_WORLD"
 notifyUser:RegisterEvent"PLAYER_ENTERING_BATTLEGROUND"
 
-local PWT_VERSION_INFO = 1.0;
+local PWT_VERSION_INFO = 1.1;
 local NEWVERSION = false;
 RegisterAddonMessagePrefix"PWTVerInfo"
 
@@ -63,11 +63,12 @@ end
 local function PandaWoW_HandleVersionInfo(msg, author, channel)
 	local recNumber = tonumber(msg);
 	if (recNumber > PWT_VERSION_INFO) then
-		if (not NEWVERSION) then
+        if not NEWVERSION then
             local alertIcon = [[|TInterface\DialogFrame\UI-Dialog-Icon-AlertOther:24:24:0|t]]
             RaidNotice_AddMessage(RaidWarningFrame, alertIcon .. '\r\n' .. YELLOW_FONT_COLOR_CODE .. alert .. '\124r', ChatTypeInfo["RAID_WARNING"])
             DEFAULT_CHAT_FRAME:AddMessage(alertIcon .. YELLOW_FONT_COLOR_CODE .. alert .. '\124r' .. alertIcon)
-		end
+            NEWVERSION = true -- we already notified player so we need to stop spamming
+        end
 	elseif (recNumber < PWT_VERSION_INFO) then
 		PandaWoW_PostVersionInfo("WHISPER", author);
 	end
@@ -174,10 +175,13 @@ local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
 
 	local location = PackInventoryLocation(container, slot, isPlayer, isBank, isBags, isVoid);
 
-    if not customEnabled and equipSlot ~= mies 
-    and (inventorySlot == 17 or inventorySlot == 16) then -- offhand fix
-        useTable[location] = nil
-        return
+    if not customEnabled and equipSlot ~= mies then
+        if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows then -- ranged fix
+            if equipLocation[mies] == 17 then useTable[location] = nil return end
+        elseif inventorySlot == 17 or inventorySlot == 16 then -- offhand fix
+            useTable[location] = nil
+            return
+        end
     end
 
     if (equipLocation[equipSlot] == inventorySlot or equipLocation[equipSlot] == 16 or equipLocation[equipSlot] == 18) and useTable[location] == nil then
@@ -352,6 +356,15 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
                 useTable[location] = nil;
             end
         end
+    end
+    
+    -- clean from duplicates
+    local hash = {}
+    for location, itemId in pairs(useTable) do
+       if not hash[itemId] then
+           hash[itemId] = true
+       else useTable[location] = nil
+       end
     end
 end)
 
