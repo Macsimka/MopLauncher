@@ -45,6 +45,7 @@ else -- only enUS/enGB yet...
 
     alert = "Warning! Your transmogrify interface files are outdated!\nUpdate files by running launcher"
 end
+local cosmeticIds, cosmetic = {105741, 105742, 105743, 105744, 105745, 105746, 105747, 105748, 95474, 95475, 97213, 97901}
 
 -- alert users to update addon
 local notifyUser = CreateFrame"Frame"
@@ -52,7 +53,7 @@ notifyUser:RegisterEvent"CHAT_MSG_ADDON"
 notifyUser:RegisterEvent"PLAYER_ENTERING_WORLD"
 notifyUser:RegisterEvent"PLAYER_ENTERING_BATTLEGROUND"
 
-local PWT_VERSION_INFO = 1.1;
+local PWT_VERSION_INFO = 1.22;
 local NEWVERSION = false;
 RegisterAddonMessagePrefix"PWTVerInfo"
 
@@ -74,6 +75,8 @@ local function PandaWoW_HandleVersionInfo(msg, author, channel)
 	end
 end
 
+LoadAddOn"Blizzard_ItemAlterationUI"
+TransmogrifyArtFrameTitleText:SetText(TRANSMOGRIFY .. " (v. " .. PWT_VERSION_INFO .. ")")
 notifyUser:SetScript("OnEvent", function(self, event, ...)
 	if event == "CHAT_MSG_ADDON" then
         local arg1, arg2, arg3, arg4 = ...
@@ -178,13 +181,14 @@ local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
     if not customEnabled and equipSlot ~= mies then
         if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows then -- ranged fix
             if equipLocation[mies] == 17 then useTable[location] = nil return end
-        elseif inventorySlot == 17 or inventorySlot == 16 then -- offhand fix
+        elseif (inventorySlot == 17 or inventorySlot == 16) and itemID ~= 3934 then -- offhand fix
             useTable[location] = nil
             return
         end
     end
 
-    if (equipLocation[equipSlot] == inventorySlot or equipLocation[equipSlot] == 16 or equipLocation[equipSlot] == 18) and useTable[location] == nil then
+    if ((equipLocation[equipSlot] == inventorySlot or equipLocation[equipSlot] == 16 or equipLocation[equipSlot] == 18) or 
+	(equipLocation[equipSlot] == 17 and inventorySlot == 16)) and useTable[location] == nil then
         useTable[location] = itemID;
 	end
 end
@@ -196,7 +200,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
     local invItemId = GetInventoryItemID("player", inventorySlot)
     if not invItemId then return end
 
-    local _, _, _, _, _, _, mainItemSubClass, _, mies = GetItemInfo(invItemId);
+    local _, _, _, _, _, mainItemClass, mainItemSubClass, _, mies = GetItemInfo(invItemId);
 
     if mainItemSubClass == nil then return end
 
@@ -238,6 +242,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
         for location, itemId in pairs(useTable) do
             if itemId == invItemId then useTable[location] = nil; end
             local _, link, itemRarity, _, _, _, itemSubClass, _, equipSlot, texture = GetItemInfo(itemId);
+            for _, id in pairs(cosmeticIds) do if itemId == id then cosmetic = true break else cosmetic = nil end end
 
             -- We need to check tooltip of items to tmog if we are able to wear
             --i.e it will hide armor from another classes but will show weapons that are unable to wear
@@ -274,9 +279,9 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
             GameTooltip:Hide()
 
             -- Hide lower armor type items and legendary items
-            if ((mainItemSubClass == plate or mainItemSubClass == mail or mainItemSubClass == leather or mainItemSubClass == cloth) and itemSubClass ~= mainItemSubClass)
-              or mainItemSubClass == daggers and (itemSubClass ~= mainItemSubClass)
-              or mainItemSubClass == shields and (itemSubClass ~= mainItemSubClass)
+            if ((mainItemSubClass == plate or mainItemSubClass == mail or mainItemSubClass == leather or mainItemSubClass == cloth) and itemSubClass ~= mainItemSubClass and not cosmetic)
+              or (mainItemSubClass == daggers and (itemSubClass ~= mainItemSubClass))
+              or (mainItemSubClass == shields and (itemSubClass ~= mainItemSubClass))
               or ((itemSubClass == polearms or itemSubClass == staves) and (itemSubClass ~= mainItemSubClass and mainItemSubClass ~= staves and mainItemSubClass ~= polearms))
               or ((mainItemSubClass == polearms or mainItemSubClass == staves) and (mainItemSubClass ~= itemSubClass and itemSubClass ~= staves and itemSubClass ~= polearms))
               or strfind(texture:lower(), 'fishing')
@@ -290,7 +295,8 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
     else
         for location, itemId in pairs(useTable) do
             if itemId == invItemId then useTable[location] = nil; end
-            local _, _, _, _, _, _, itemSubClass, _, equipSlot = GetItemInfo(itemId);
+            local _, _, _, _, _, itemClass, itemSubClass, _, equipSlot = GetItemInfo(itemId);
+            -- for _, id in pairs(cosmeticIds) do if itemId == id then cosmetic = true break else cosmetic = nil end end
 
             -- Allow robes trans into chests and vice versa
             if mies == "INVTYPE_ROBE" and equipSlot == "INVTYPE_CHEST" then
@@ -307,23 +313,32 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
                 equipSlot = "INVTYPE_WEAPON"
             elseif mies == "INVTYPE_2HWEAPON" and equipSlot == "INVTYPE_WEAPON" then
                 equipSlot = "INVTYPE_2HWEAPON"
-            -- Need serverside fix
-            --[[ Allow main hands trans into one hands and vice versa
-            elseif mies == "INVTYPE_WEAPON" and equipSlot == "INVTYPE_WEAPONMAINHAND" then
-                equipSlot = "INVTYPE_WEAPON"
-            elseif mies == "INVTYPE_WEAPONMAINHAND" and equipSlot == "INVTYPE_WEAPON" then
-                equipSlot = "INVTYPE_WEAPONMAINHAND"
-            ]]
             -- Allow offhands trans into shields and vice versa
             elseif mies == "INVTYPE_HOLDABLE" and equipSlot == "INVTYPE_SHIELD" then
                 equipSlot = "INVTYPE_HOLDABLE"
             elseif mies == "INVTYPE_SHIELD" and equipSlot == "INVTYPE_HOLDABLE" then
                 equipSlot = "INVTYPE_SHIELD"
             end
+            -- Allow main hands trans into one hands and vice versa
+            if Is64BitClient() then -- working only on x64 client :(
+                if mies == "INVTYPE_2HWEAPON" and itemId == 3934 then
+                    equipSlot = "INVTYPE_2HWEAPON"
+                elseif mies == "INVTYPE_WEAPON" and equipSlot == "INVTYPE_WEAPONMAINHAND" then
+                    equipSlot = "INVTYPE_WEAPON"
+                elseif mies == "INVTYPE_WEAPONMAINHAND" and equipSlot == "INVTYPE_WEAPON" then
+                    equipSlot = "INVTYPE_WEAPONMAINHAND"
+                elseif mies == "INVTYPE_WEAPON" and equipSlot == "INVTYPE_WEAPONOFFHAND" then
+                    equipSlot = "INVTYPE_WEAPON"
+                elseif mies == "INVTYPE_WEAPONOFFHAND" and equipSlot == "INVTYPE_WEAPON" then
+                    equipSlot = "INVTYPE_WEAPONOFFHAND"
+                end
+            end
 
             -- Hide weapons that not allowed to tmog
+            if Is64BitClient() and itemId == 3934 then if (mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces or mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces or mainItemSubClass == polearms or mainItemSubClass == staves) then-- working only on x64 client :(
+			else useTable[location] = nil; end
             -- polearms/staves -> staves/polearms/2h
-            if (mainItemSubClass == polearms or mainItemSubClass == staves)
+            elseif (mainItemSubClass == polearms or mainItemSubClass == staves)
               and (itemSubClass ~= staves and itemSubClass ~= polearms and itemSubClass ~= twoHswords and itemSubClass ~= twoHaxes and itemSubClass ~= twoHmaces) then
                 useTable[location] = nil;
             -- daggers/fists -> 1h
@@ -352,19 +367,34 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
             end
 
             if (itemSubClass == BATTLE_PET_SOURCE_2 or itemSubClass == QUESTS_LABEL) or -- en/ru
-            mies ~= equipSlot then
+            mies ~= equipSlot and itemId ~= 3934 then
                 useTable[location] = nil;
             end
         end
     end
-    
+
+    -- clean from incorrect slots (x64 client)
+    if Is64BitClient() then
+        for location, itemId in pairs(useTable) do
+            local _, _, _, _, _, _, itemSubClass, _, itemSlot = GetItemInfo(itemId);
+            if equipLocation[itemSlot] ~= inventorySlot and inventorySlot == 17 then
+                if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows then
+                    useTable[location] = nil
+                end
+            elseif equipLocation[mies] == 16 and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows) then useTable[location] = nil
+            elseif equipLocation[itemSlot] == 17 and inventorySlot == 16 then
+            elseif equipLocation[itemSlot] ~= inventorySlot and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemId ~= 3934) then useTable[location] = nil
+            end
+        end
+    end
+
     -- clean from duplicates
     local hash = {}
     for location, itemId in pairs(useTable) do
-       if not hash[itemId] then
-           hash[itemId] = true
-       else useTable[location] = nil
-       end
+        if not hash[itemId] then
+            hash[itemId] = true
+        else useTable[location] = nil
+        end
     end
 end)
 
