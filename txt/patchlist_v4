@@ -1,88 +1,88 @@
 {
   "files": [
     {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy82OXRvNml4aDV4cjFja2kvUGFuZGFXb1ctNjQuZXhlP2RsPTAmcmF3PTE=",
-      "fileName": "PandaWoW-64.exe",
-      "hash": "E542AA4617BF01DAAC02C82D1067867B",
-      "size": 20902448
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9wdG1pcm1ldHc3NHpkNWwvUGFuZGFXb1ctMzIuZXhlP2RsPTAmcmF3PTE=",
-      "fileName": "PandaWoW-32.exe",
-      "hash": "B8BC43359CF9187F8911DF7A3279D068",
-      "size": 13151792
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9ia3V1OXhhbGhubHoybHQvTW92aWVQcm94eS5leGU/ZGw9MCZyYXc9MQ==",
-      "fileName": "MovieProxy.exe",
-      "hash": "F39774A53E9D1F49FAB3C4895513B7A9",
-      "size": 76992
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy91aWpkYndubGR1YW8wd3kvbXN2Y3I4MC5kbGw/ZGw9MCZyYXc9MQ==",
-      "fileName": "msvcr80.dll",
-      "hash": "1169436EE42F860C7DB37A4692B38F0E",
-      "size": 632656
-    },
-    {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy93YW9zbW1wbTExZ3YyY2EvZGl2eGRlY29kZXIuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "divxdecoder.dll",
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci8=",
       "hash": "57E72CAE12091DAFA29A8E4DB8B4F1D1",
-      "size": 413696
+      "size": 413696,
+      "url": "divxdecoder.dll"
     },
     {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9kOGQ1eWJrdHQ3ams4czcvcGFuZGF3b3ctMzIuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "pandawow-32.dll",
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9Nb3ZpZVByb3h5LmV4ZQ==",
+      "hash": "F39774A53E9D1F49FAB3C4895513B7A9",
+      "size": 76992,
+      "url": "MovieProxy.exe"
+    },
+    {
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9tc3ZjcjgwLmRsbA==",
+      "hash": "1169436EE42F860C7DB37A4692B38F0E",
+      "size": 632656,
+      "url": "msvcr80.dll"
+    },
+    {
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9wYW5kYXdvdy0zMi5kbGw=",
       "hash": "C952B466645BC5EB79956E46AC12970B",
-      "size": 190464
+      "size": 190464,
+      "url": "pandawow-32.dll"
     },
     {
-      "url": "aHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy9qMXdpdWlmeHJwbnJxc2wvcGFuZGF3b3ctNjQuZGxsP2RsPTAmcmF3PTE=",
-      "fileName": "pandawow-64.dll",
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9QYW5kYVdvVy0zMi5leGU=",
+      "hash": "B8BC43359CF9187F8911DF7A3279D068",
+      "size": 13151792,
+      "url": "PandaWoW-32.exe"
+    },
+    {
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9wYW5kYXdvdy02NC5kbGw=",
       "hash": "F69C307684778F4A31E887E9C255D471",
-      "size": 201216
+      "size": 201216,
+      "url": "pandawow-64.dll"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQWNlVGltZXItMy4wLmx1YQ==",
-      "fileName": "AceTimer-3.0.lua",
-      "hash": "DB3EA0854248470AC4D493A9E41F961C",
-      "size": 9730
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9QYW5kYVdvVy02NC5leGU=",
+      "hash": "E542AA4617BF01DAAC02C82D1067867B",
+      "size": 20902448,
+      "url": "PandaWoW-64.exe"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcubHVh",
-      "fileName": "CrossFactionBG.lua",
-      "hash": "9B1398B085A35DE37497FC28767747BA",
-      "size": 4847
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL0FjZVRpbWVyLTMuMC5sdWE=",
+      "hash": "50A0D887631EE3D5D65616CEF35999F6",
+      "size": 9456,
+      "url": "AceTimer-3.0.lua"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvQ3Jvc3NGYWN0aW9uQkcueG1s",
-      "fileName": "CrossFactionBG.xml",
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL0Nyb3NzRmFjdGlvbkJHLmx1YQ==",
+      "hash": "1E6EAA80A1D14C41CB26856EDEBA4634",
+      "size": 5723,
+      "url": "CrossFactionBG.lua"
+    },
+    {
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL0Nyb3NzRmFjdGlvbkJHLnhtbA==",
       "hash": "C4E4E1403786541ADB13670E1C9C3A06",
-      "size": 577
+      "size": 577,
+      "url": "CrossFactionBG.xml"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvTGliU3R1Yi5sdWE=",
-      "fileName": "LibStub.lua",
-      "hash": "084F74C94AE937F954766F6C815EF8D6",
-      "size": 1397
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL0xpYlBhbmRhV29XLmx1YQ==",
+      "hash": "5BE17EE94508CC3CDA57C2392076C771",
+      "size": 5225,
+      "url": "LibPandaWoW.lua"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvTGliUGFuZGFXb1cubHVh",
-      "fileName": "LibPandaWoW.lua",
-      "hash": "0DCEFFB7753AEBF6FBEE53034D02118A",
-      "size": 5374
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL0xpYlN0dWIubHVh",
+      "hash": "93ABC8A68C559035F6AAE51EED7FF89A",
+      "size": 1367,
+      "url": "LibStub.lua"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvUGFuZGFXb1cudG9j",
-      "fileName": "PandaWoW.toc",
-      "hash": "ECECFE44A60D673C86779DEA49F7716A",
-      "size": 201
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL1BhbmRhV29XLnRvYw==",
+      "hash": "1A5DD0B1891E2A341A7FB8616117E244",
+      "size": 190,
+      "url": "PandaWoW.toc"
     },
     {
-      "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9BZGRPbnMvUGFuZGFXb1cvVHJhbnNtb2dyaWZpY2F0aW9uLmx1YQ==",
-      "fileName": "Transmogrification.lua",
+      "fileName": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9JbnRlcmZhY2UvQWRkT25zL1BhbmRhV29XL1RyYW5zbW9ncmlmaWNhdGlvbi5sdWE=",
       "hash": "2E6809DCE6A450170F51846DF225476E",
-      "size": 20705
+      "size": 20705,
+      "url": "Transmogrification.lua"
     }
   ]
 }
