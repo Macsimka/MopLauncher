@@ -1,0 +1,11 @@
+## Interface: 50400
+## Title: PandaWoW
+## Version: 1.0
+## SavedVariablesPerCharacter: IsCrossChecked
+
+LibStub.lua
+AceTimer-3.0.lua
+LibPandaWoW.lua
+
+CrossFactionBG.xml
+Transmogrification.lua
