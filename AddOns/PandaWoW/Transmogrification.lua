@@ -30,9 +30,9 @@ local ITEM_QUALITY_LEGENDARY = _G.ITEM_QUALITY_LEGENDARY;
     bows        = 264,  crossbows   = 5011,
     guns        = 266,  wands       = 5009}]]
 local cloth, leather, mail, plate
-local oneHaxes, twoHaxes, polearms, staves, oneHmaces, twoHmaces, oneHswords, twoHswords, daggers, fists, shields, bows, crossbows, guns =
+local oneHaxes, twoHaxes, polearms, staves, oneHmaces, twoHmaces, oneHswords, twoHswords, daggers, fists, shields, bows, crossbows, guns, wands =
 GetSpellInfo(196), GetSpellInfo(197), GetSpellInfo(200), GetSpellInfo(227), GetSpellInfo(198), GetSpellInfo(199), 
-GetSpellInfo(201), GetSpellInfo(202), GetSpellInfo(1180), GetSpellInfo(15590), GetSpellInfo(9116), GetSpellInfo(264), GetSpellInfo(5011), GetSpellInfo(266)
+GetSpellInfo(201), GetSpellInfo(202), GetSpellInfo(1180), GetSpellInfo(15590), GetSpellInfo(9116), GetSpellInfo(264), GetSpellInfo(5011), GetSpellInfo(266), GetSpellInfo(5009)
 local alert
 if GetLocale() == "ruRU" then
     polearms = "Древковое"; oneHmaces = "Одноручное дробящее"; twoHmaces = "Двуручное дробящее"
@@ -53,7 +53,7 @@ notifyUser:RegisterEvent"CHAT_MSG_ADDON"
 notifyUser:RegisterEvent"PLAYER_ENTERING_WORLD"
 notifyUser:RegisterEvent"PLAYER_ENTERING_BATTLEGROUND"
 
-local PWT_VERSION_INFO = 1.22;
+local PWT_VERSION_INFO = 1.23;
 local NEWVERSION = false;
 RegisterAddonMessagePrefix"PWTVerInfo"
 
@@ -179,7 +179,7 @@ local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
 	local location = PackInventoryLocation(container, slot, isPlayer, isBank, isBags, isVoid);
 
     if not customEnabled and equipSlot ~= mies then
-        if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows then -- ranged fix
+        if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands then -- ranged fix
             if equipLocation[mies] == 17 then useTable[location] = nil return end
         elseif (inventorySlot == 17 or inventorySlot == 16) and itemID ~= 3934 then -- offhand fix
             useTable[location] = nil
@@ -287,7 +287,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
               or strfind(texture:lower(), 'fishing')
               or mainItemSubClass == fists and (itemSubClass ~= mainItemSubClass)
               or ((mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces) and (itemSubClass == twoHmaces or itemSubClass == twoHaxes or itemSubClass == twoHswords or itemSubClass == daggers or itemSubClass == fists))
-              or ((mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows) and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows))
+              or ((mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows or mainItemSubClass == wands) and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemSubClass ~= wands))
               or itemRarity == ITEM_QUALITY_LEGENDARY then
                 useTable[location] = nil;
             end
@@ -357,12 +357,12 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
               and itemSubClass ~= daggers and itemSubClass ~= fists and itemSubClass ~= staves and itemSubClass ~= polearms) then
                 useTable[location] = nil;
             -- Hide wands from bows/crossbows/guns slot and vice versa
-            elseif (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows)
-             and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows) then
+            elseif (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows or mainItemSubClass == wands)
+             and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemSubClass ~= wands) then
                 useTable[location] = nil;
-            elseif mies ~= equipSlot and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows) then
+            elseif mies ~= equipSlot and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands) then
                 useTable[location] = nil;
-            elseif itemSubClass ~= mainItemSubClass and mies == equipSlot and (mainItemSubClass ~= guns and mainItemSubClass ~= bows and mainItemSubClass ~= crossbows) and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows) then
+            elseif itemSubClass ~= mainItemSubClass and mies == equipSlot and (mainItemSubClass ~= guns and mainItemSubClass ~= bows and mainItemSubClass ~= crossbows and mainItemSubClass ~= wands) and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands) then
                 useTable[location] = nil;
             end
 
@@ -378,12 +378,12 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
         for location, itemId in pairs(useTable) do
             local _, _, _, _, _, _, itemSubClass, _, itemSlot = GetItemInfo(itemId);
             if equipLocation[itemSlot] ~= inventorySlot and inventorySlot == 17 then
-                if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows then
+                if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands then
                     useTable[location] = nil
                 end
             elseif equipLocation[mies] == 16 and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows) then useTable[location] = nil
             elseif equipLocation[itemSlot] == 17 and inventorySlot == 16 then
-            elseif equipLocation[itemSlot] ~= inventorySlot and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemId ~= 3934) then useTable[location] = nil
+            elseif equipLocation[itemSlot] ~= inventorySlot and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemSubClass ~= wands and itemId ~= 3934) then useTable[location] = nil
             end
         end
     end
