@@ -1,5 +1,3 @@
-local addonName, addonDB = ...
-
 PandaWoWCommandLib = commandLib
 assert(PandaWoWCommandLib)
 
@@ -8,53 +6,70 @@ Transmogrication = {};
 local customEnabled = nil;
 
 local _G = _G
-local GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, GetSpellInfo, strsub, gsub, strfind = 
-      GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, GetSpellInfo, string.sub, string.gsub, string.find
-local bor, lshift = bit.bor, bit.lshift;
+local GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, GetItemInfo, strsub, gsub, strfind = 
+      _G.GetContainerNumSlots, _G.GetContainerItemID, _G.GetContainerItemLink, _G.GetItemInfo, _G.strsub, _G.gsub, _G.strfind
+local bor, lshift = _G.bit.bor, _G.bit.lshift;
 local NUM_BAG_SLOTS, BACKPACK_CONTAINER, BANK_CONTAINER = _G.NUM_BAG_SLOTS, _G.BACKPACK_CONTAINER, _G.BANK_CONTAINER;
 
 -- empty dummies
 local VOID_CONTAINER, PLAYER_CONTAINER = 12, 13
-
--- en locale: "Quests","Quest", ru locale: "Задание","Задания" :\
-local QUESTS_LABEL, BATTLE_PET_SOURCE_2 = _G.QUESTS_LABEL, _G.BATTLE_PET_SOURCE_2
-
 local ITEM_QUALITY_LEGENDARY = _G.ITEM_QUALITY_LEGENDARY;
 
---[[local itemTypes = {
-    oneHaxes    = 196,  twoHaxes    = 197,
-    oneHmaces   = 198,  twoHmaces   = 199,
-    polearms    = 200,  staves      = 227,
-    oneHswords  = 201,  twoHswords  = 202,
-    daggers     = 1180, fists       = 15590,
-    bows        = 264,  crossbows   = 5011,
-    guns        = 266,  wands       = 5009}]]
-local cloth, leather, mail, plate
-local oneHaxes, twoHaxes, polearms, staves, oneHmaces, twoHmaces, oneHswords, twoHswords, daggers, fists, shields, bows, crossbows, guns, wands =
-GetSpellInfo(196), GetSpellInfo(197), GetSpellInfo(200), GetSpellInfo(227), GetSpellInfo(198), GetSpellInfo(199), 
-GetSpellInfo(201), GetSpellInfo(202), GetSpellInfo(1180), GetSpellInfo(15590), GetSpellInfo(9116), GetSpellInfo(264), GetSpellInfo(5011), GetSpellInfo(266), GetSpellInfo(5009)
-local alert
-if GetLocale() == "ruRU" then
-    polearms = "Древковое"; oneHmaces = "Одноручное дробящее"; twoHmaces = "Двуручное дробящее"
-    cloth = "Тканевые"; leather = "Кожаные"; mail = "Кольчужные"; plate = "Латные"; fists = "Кистевое"
-    guns = "Огнестрельное"
+local alert = GetLocale() == "ruRU" and "Внимание! Ваши файлы интерфейса трансмогрификации устарели!\nОбновите файлы запустив лаунчер" or "Warning! Your transmogrify interface files are outdated!\nUpdate files by running launcher"
 
-    alert = "Внимание! Ваши файлы интерфейса трансмогрификации устарели!\nОбновите файлы запустив лаунчер"
-else -- only enUS/enGB yet...
-    cloth = "Cloth"; leather = "Leather"; mail = "Mail"; plate = "Plate"
+local f = CreateFrame("Frame")
+f:RegisterEvent("CHAT_MSG_ADDON")
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND")
+f:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 
-    alert = "Warning! Your transmogrify interface files are outdated!\nUpdate files by running launcher"
+local itemTypes, L, typesSize, LtypesSize = {
+	CLOTH    = 47,
+	LEATHER  = 60,
+	MAIL     = 285,
+	PLATE    = 7922,
+	ONEHAXE  = 7941,
+	ONEHMACE = 7945,
+	ONEHSWORD= 7943,
+	DAGGER   = 7947,
+	POLEARM  = 25228,
+	BOW      = 25240,
+	GUN      = 4379,
+	STAFF    = 35,
+	CROSSBOW = 25254,
+	WAND     = 25282,
+	TWOHAXE  = 7958,
+	TWOHMACE = 7956,
+	TWOHSWORD= 7957,
+	SHIELD   = 3160,
+	FIST     = 29348,
+	COSMETIC = 105741,
+	QUEST    = 22549,
+
+	ARMOR    = 1270,
+	MISC	 = 105602,
+	FISHING  = 6256
+}, {}, 24, 0 -- WHEN ADDING VALUES BE SURE TO INCREASE THIS
+
+local fail = true
+local function queryItems()
+	if not fail then return end
+	for i, v in pairs(itemTypes) do
+		local info = {GetItemInfo(v)}
+		if #info > 0 then
+			LtypesSize = LtypesSize + 1
+			L[i] = i == "ARMOR" and info[6] or info[7]
+		end
+	end
+	if typesSize == LtypesSize then
+		f:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
+		fail = nil
+	end
 end
-local cosmeticIds, cosmetic = {105741, 105742, 105743, 105744, 105745, 105746, 105747, 105748, 95474, 95475, 97213, 97901}
+queryItems()
 
--- alert users to update addon
-local notifyUser = CreateFrame"Frame"
-notifyUser:RegisterEvent"CHAT_MSG_ADDON"
-notifyUser:RegisterEvent"PLAYER_ENTERING_WORLD"
-notifyUser:RegisterEvent"PLAYER_ENTERING_BATTLEGROUND"
-
-local PWT_VERSION_INFO = 1.23;
-local NEWVERSION = false;
+local PWT_VERSION_INFO = 1.24;
+local OLDVERSION = true;
 RegisterAddonMessagePrefix"PWTVerInfo"
 
 local function PandaWoW_PostVersionInfo(channel, target)
@@ -64,20 +79,21 @@ end
 local function PandaWoW_HandleVersionInfo(msg, author, channel)
 	local recNumber = tonumber(msg);
 	if (recNumber > PWT_VERSION_INFO) then
-        if not NEWVERSION then
+        if OLDVERSION then
             local alertIcon = [[|TInterface\DialogFrame\UI-Dialog-Icon-AlertOther:24:24:0|t]]
             RaidNotice_AddMessage(RaidWarningFrame, alertIcon .. '\r\n' .. YELLOW_FONT_COLOR_CODE .. alert .. '\124r', ChatTypeInfo["RAID_WARNING"])
             DEFAULT_CHAT_FRAME:AddMessage(alertIcon .. YELLOW_FONT_COLOR_CODE .. alert .. '\124r' .. alertIcon)
-            NEWVERSION = true -- we already notified player so we need to stop spamming
+            OLDVERSION = nil -- we already notified player so we need to stop spamming
         end
 	elseif (recNumber < PWT_VERSION_INFO) then
 		PandaWoW_PostVersionInfo("WHISPER", author);
 	end
 end
 
-LoadAddOn"Blizzard_ItemAlterationUI"
+LoadAddOn("Blizzard_ItemAlterationUI")
+
 TransmogrifyArtFrameTitleText:SetText(TRANSMOGRIFY .. " (v. " .. PWT_VERSION_INFO .. ")")
-notifyUser:SetScript("OnEvent", function(self, event, ...)
+f:SetScript("OnEvent", function(self, event, ...)
 	if event == "CHAT_MSG_ADDON" then
         local arg1, arg2, arg3, arg4 = ...
 		if arg1 == "PWTVerInfo" then
@@ -89,6 +105,8 @@ notifyUser:SetScript("OnEvent", function(self, event, ...)
 		end
 	elseif event == "PLAYER_ENTERING_BATTLEGROUND" then
 		PandaWoW_PostVersionInfo"INSTANCE_CHAT";
+	elseif event == "GET_ITEM_INFO_RECEIVED" then
+		queryItems()
     end
 end)
 
@@ -124,7 +142,7 @@ local ITEM_INVENTORY_LOCATION_BANK    = ITEM_INVENTORY_LOCATION_BANK;
 local ITEM_INVENTORY_LOCATION_PLAYER  = ITEM_INVENTORY_LOCATION_PLAYER;
 local ITEM_INVENTORY_LOCATION_VOIDSTORAGE   = ITEM_INVENTORY_LOCATION_VOIDSTORAGE;
 
-function PackInventoryLocation(container, slot, equipment, bank, bags, voidStorage)
+local function PackInventoryLocation(container, slot, equipment, bank, bags, voidStorage)
 	local location = 0
 	-- basic flags
     location = bor(location, equipment      and ITEM_INVENTORY_LOCATION_PLAYER or 0);
@@ -152,6 +170,63 @@ function PackInventoryLocation(container, slot, equipment, bank, bags, voidStora
 	return location;
 end
 
+local function noTransmog(mic, misc, ic, isc, mies, ies, id)
+	if customEnabled then
+		-- Hide weapons that not allowed to tmog
+		if Is64BitClient() and id == 3934 then
+			if misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE or misc == L.TWOHSWORD or misc == L.TWOHAXE or misc == L.TWOHMACE or misc == L.POLEARM or misc == L.STAFF then-- working only on x64 client :(
+				return false
+			else
+				return true
+			end
+		-- polearms/staves -> staves/polearms/2h
+		elseif (misc == L.POLEARM or misc == L.STAFF) and isc ~= L.STAFF and isc ~= L.POLEARM and isc ~= L.TWOHSWORD and isc ~= L.TWOHAXE and isc ~= L.TWOHMACE then
+			return true
+		-- daggers/fists -> 1h
+		elseif (misc == L.DAGGER or misc == L.FIST) and isc ~= L.ONEHSWORD and isc ~= L.ONEHAXE and isc ~= L.ONEHMACE and isc ~= L.DAGGER and isc ~= L.FIST then
+			return true
+		-- 2h NOT ALLOWED TO daggers/fists
+		elseif (misc == L.TWOHSWORD or misc == L.TWOHAXE or misc == L.TWOHMACE) and (isc == L.DAGGER or isc == L.FIST) then
+			return true
+		-- 1h/2h > 1h/2h
+		elseif (misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE or misc == L.TWOHSWORD or misc == L.TWOHAXE or misc == L.TWOHMACE)
+		  and (isc ~= L.TWOHSWORD and isc ~= L.TWOHAXE and isc ~= L.TWOHMACE
+		  and isc ~= L.ONEHSWORD and isc ~= L.ONEHAXE and isc ~= L.ONEHMACE
+		  and isc ~= L.DAGGER and isc ~= L.FIST and isc ~= L.STAFF and isc ~= L.POLEARM) then
+			return true
+		-- Hide wands from bows/crossbows/guns slot and vice versa
+		elseif (misc == L.GUN or misc == L.BOW or misc == L.CROSSBOW or misc == L.WAND) and isc ~= L.GUN and isc ~= L.BOW and isc ~= L.CROSSBOW and isc ~= L.WAND then
+			return true
+		elseif mies ~= equipSlot and (isc == L.GUN or isc == L.BOW or isc == L.CROSSBOW or isc == L.WAND) then
+			return true
+		elseif isc ~= misc and mies == equipSlot and misc ~= L.GUN and misc ~= L.BOW and misc ~= L.CROSSBOW and misc ~= L.WAND and (isc == L.GUN or isc == L.BOW or isc == L.CROSSBOW or isc == L.WAND) then
+			return true
+		else
+			return false
+		end
+	else -- not premium
+		if isc == L.FISHING then
+			return true
+		elseif (misc == L.PLATE or misc == L.MAIL or misc == L.LEATHER or misc == L.CLOTH) and isc ~= misc and isc ~= L.COSMETIC then
+			return true
+		elseif (misc == L.DAGGER or misc == L.SHIELD) and isc ~= misc then
+			return true
+		elseif (isc == L.POLEARM or isc == L.STAFF) and isc ~= misc and misc ~= L.STAFF and misc ~= L.POLEARM then
+			return true
+		elseif (misc == L.POLEARM or misc == L.STAFF) and misc ~= isc and isc ~= l.STAFF and isc ~= L.POLEARM then
+		    return true
+		elseif misc == L.FIST and isc ~= misc then
+			return true
+		elseif (misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE) and (isc == L.TWOHMACE or isc == L.TWOHAXE or isc == L.TWOHSWORD or isc == L.DAGGER or isc == L.FIST or isc == L.WAND) then
+			return true
+		elseif (misc == L.GUN or misc == L.BOW or misc == L.CROSSBOW or misc == L.WAND) and isc ~= L.GUN and isc ~= L.BOW and isc ~= L.CROSSBOW and isc ~= L.WAND then
+			return true
+		else
+			return false
+		end
+	end
+end
+
 local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
     local itemID, link, _
     if container == VOID_CONTAINER then
@@ -174,12 +249,12 @@ local function AddEquippableItem(useTable, mies, inventorySlot, container, slot)
 	if not isBags then container = nil end
 
 	local _, _, _, _, _, _, itemSubClass, _, equipSlot = GetItemInfo(link)
-    if itemSubClass == BATTLE_PET_SOURCE_2 or itemSubClass == QUESTS_LABEL then return end -- en/ru
+    if itemSubClass == L.QUEST then return end
 
 	local location = PackInventoryLocation(container, slot, isPlayer, isBank, isBags, isVoid);
 
     if not customEnabled and equipSlot ~= mies then
-        if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands then -- ranged fix
+        if itemSubClass == L.GUN or itemSubClass == L.BOW or itemSubClass == L.CROSSBOW or itemSubClass == L.WAND then -- ranged fix
             if equipLocation[mies] == 17 then useTable[location] = nil return end
         elseif (inventorySlot == 17 or inventorySlot == 16) and itemID ~= 3934 then -- offhand fix
             useTable[location] = nil
@@ -241,8 +316,7 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
         localizedClass = LOCALIZED_CLASS_NAMES_MALE[class]
         for location, itemId in pairs(useTable) do
             if itemId == invItemId then useTable[location] = nil; end
-            local _, link, itemRarity, _, _, _, itemSubClass, _, equipSlot, texture = GetItemInfo(itemId);
-            for _, id in pairs(cosmeticIds) do if itemId == id then cosmetic = true break else cosmetic = nil end end
+            local _, link, itemRarity, _, _, itemClass, itemSubClass, _, equipSlot = GetItemInfo(itemId);
 
             -- We need to check tooltip of items to tmog if we are able to wear
             --i.e it will hide armor from another classes but will show weapons that are unable to wear
@@ -279,24 +353,14 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
             GameTooltip:Hide()
 
             -- Hide lower armor type items and legendary items
-            if ((mainItemSubClass == plate or mainItemSubClass == mail or mainItemSubClass == leather or mainItemSubClass == cloth) and itemSubClass ~= mainItemSubClass and not cosmetic)
-              or (mainItemSubClass == daggers and (itemSubClass ~= mainItemSubClass))
-              or (mainItemSubClass == shields and (itemSubClass ~= mainItemSubClass))
-              or ((itemSubClass == polearms or itemSubClass == staves) and (itemSubClass ~= mainItemSubClass and mainItemSubClass ~= staves and mainItemSubClass ~= polearms))
-              or ((mainItemSubClass == polearms or mainItemSubClass == staves) and (mainItemSubClass ~= itemSubClass and itemSubClass ~= staves and itemSubClass ~= polearms))
-              or strfind(texture:lower(), 'fishing')
-              or mainItemSubClass == fists and (itemSubClass ~= mainItemSubClass)
-              or ((mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces) and (itemSubClass == twoHmaces or itemSubClass == twoHaxes or itemSubClass == twoHswords or itemSubClass == daggers or itemSubClass == fists))
-              or ((mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows or mainItemSubClass == wands) and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemSubClass ~= wands))
-              or itemRarity == ITEM_QUALITY_LEGENDARY then
-                useTable[location] = nil;
-            end
+			if itemRarity == ITEM_QUALITY_LEGENDARY or noTransmog(mainItemClass, mainItemSubClass, itemClass, itemSubClass, mies, equipSlot, itemId) then
+				useTable[location] = nil
+			end
         end
     else
         for location, itemId in pairs(useTable) do
             if itemId == invItemId then useTable[location] = nil; end
             local _, _, _, _, _, itemClass, itemSubClass, _, equipSlot = GetItemInfo(itemId);
-            -- for _, id in pairs(cosmeticIds) do if itemId == id then cosmetic = true break else cosmetic = nil end end
 
             -- Allow robes trans into chests and vice versa
             if mies == "INVTYPE_ROBE" and equipSlot == "INVTYPE_CHEST" then
@@ -334,40 +398,11 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
                 end
             end
 
-            -- Hide weapons that not allowed to tmog
-            if Is64BitClient() and itemId == 3934 then if (mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces or mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces or mainItemSubClass == polearms or mainItemSubClass == staves) then-- working only on x64 client :(
-			else useTable[location] = nil; end
-            -- polearms/staves -> staves/polearms/2h
-            elseif (mainItemSubClass == polearms or mainItemSubClass == staves)
-              and (itemSubClass ~= staves and itemSubClass ~= polearms and itemSubClass ~= twoHswords and itemSubClass ~= twoHaxes and itemSubClass ~= twoHmaces) then
-                useTable[location] = nil;
-            -- daggers/fists -> 1h
-            elseif (mainItemSubClass == daggers or mainItemSubClass == fists)
-              and (itemSubClass ~= oneHswords and itemSubClass ~= oneHaxes and itemSubClass ~= oneHmaces
-              and itemSubClass ~= daggers and itemSubClass ~= fists) then
-                useTable[location] = nil;
-            -- 2h NOT ALLOWED TO daggers/fists
-            elseif (mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces)
-              and (itemSubClass == daggers or itemSubClass == fists) then
-                useTable[location] = nil;
-            -- 1h/2h > 1h/2h
-            elseif (mainItemSubClass == oneHswords or mainItemSubClass == oneHaxes or mainItemSubClass == oneHmaces or mainItemSubClass == twoHswords or mainItemSubClass == twoHaxes or mainItemSubClass == twoHmaces)
-              and (itemSubClass ~= twoHswords and itemSubClass ~= twoHaxes and itemSubClass ~= twoHmaces
-              and itemSubClass ~= oneHswords and itemSubClass ~= oneHaxes and itemSubClass ~= oneHmaces
-              and itemSubClass ~= daggers and itemSubClass ~= fists and itemSubClass ~= staves and itemSubClass ~= polearms) then
-                useTable[location] = nil;
-            -- Hide wands from bows/crossbows/guns slot and vice versa
-            elseif (mainItemSubClass == guns or mainItemSubClass == bows or mainItemSubClass == crossbows or mainItemSubClass == wands)
-             and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemSubClass ~= wands) then
-                useTable[location] = nil;
-            elseif mies ~= equipSlot and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands) then
-                useTable[location] = nil;
-            elseif itemSubClass ~= mainItemSubClass and mies == equipSlot and (mainItemSubClass ~= guns and mainItemSubClass ~= bows and mainItemSubClass ~= crossbows and mainItemSubClass ~= wands) and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands) then
-                useTable[location] = nil;
-            end
+			if noTransmog(mainItemClass, mainItemSubClass, itemClass, itemSubClass, mies, equipSlot, itemId) then
+				useTable[location] = nil
+			end
 
-            if (itemSubClass == BATTLE_PET_SOURCE_2 or itemSubClass == QUESTS_LABEL) or -- en/ru
-            mies ~= equipSlot and itemId ~= 3934 then
+            if (itemSubClass == L.QUEST) or mies ~= equipSlot and itemId ~= 3934 then
                 useTable[location] = nil;
             end
         end
@@ -378,12 +413,12 @@ hooksecurefunc('GetInventoryItemsForSlot', function(inventorySlot, useTable, tra
         for location, itemId in pairs(useTable) do
             local _, _, _, _, _, _, itemSubClass, _, itemSlot = GetItemInfo(itemId);
             if equipLocation[itemSlot] ~= inventorySlot and inventorySlot == 17 then
-                if itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows or itemSubClass == wands then
+                if itemSubClass == L.GUN or itemSubClass == L.BOW or itemSubClass == L.CROSSBOW or itemSubClass == L.WAND then
                     useTable[location] = nil
                 end
-            elseif equipLocation[mies] == 16 and (itemSubClass == guns or itemSubClass == bows or itemSubClass == crossbows) then useTable[location] = nil
+            elseif equipLocation[mies] == 16 and (itemSubClass == L.GUN or itemSubClass == L.BOW or itemSubClass == L.CROSSBOW) then useTable[location] = nil
             elseif equipLocation[itemSlot] == 17 and inventorySlot == 16 then
-            elseif equipLocation[itemSlot] ~= inventorySlot and (itemSubClass ~= guns and itemSubClass ~= bows and itemSubClass ~= crossbows and itemSubClass ~= wands and itemId ~= 3934) then useTable[location] = nil
+            elseif equipLocation[itemSlot] ~= inventorySlot and (itemSubClass ~= L.GUN and itemSubClass ~= L.BOW and itemSubClass ~= L.CROSSBOW and itemSubClass ~= L.WAND and itemId ~= 3934) then useTable[location] = nil
             end
         end
     end
