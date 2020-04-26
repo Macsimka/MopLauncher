@@ -68,7 +68,7 @@ local function queryItems()
 end
 queryItems()
 
-local PWT_VERSION_INFO = 1.24;
+local PWT_VERSION_INFO = 1.25;
 local OLDVERSION = true;
 RegisterAddonMessagePrefix"PWTVerInfo"
 
@@ -171,6 +171,7 @@ local function PackInventoryLocation(container, slot, equipment, bank, bags, voi
 end
 
 local function noTransmog(mic, misc, ic, isc, mies, ies, id)
+	if id == 3934 and not Is64BitClient() then return true end
 	if customEnabled then
 		-- Hide weapons that not allowed to tmog
 		if Is64BitClient() and id == 3934 then
@@ -189,17 +190,13 @@ local function noTransmog(mic, misc, ic, isc, mies, ies, id)
 		elseif (misc == L.TWOHSWORD or misc == L.TWOHAXE or misc == L.TWOHMACE) and (isc == L.DAGGER or isc == L.FIST) then
 			return true
 		-- 1h/2h > 1h/2h
-		elseif (misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE or misc == L.TWOHSWORD or misc == L.TWOHAXE or misc == L.TWOHMACE)
+		elseif ((isc == L.STAFF or isc == L.POLEARM) and (misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE)) or (misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE or misc == L.TWOHSWORD or misc == L.TWOHAXE or misc == L.TWOHMACE)
 		  and (isc ~= L.TWOHSWORD and isc ~= L.TWOHAXE and isc ~= L.TWOHMACE
 		  and isc ~= L.ONEHSWORD and isc ~= L.ONEHAXE and isc ~= L.ONEHMACE
 		  and isc ~= L.DAGGER and isc ~= L.FIST and isc ~= L.STAFF and isc ~= L.POLEARM) then
 			return true
 		-- Hide wands from bows/crossbows/guns slot and vice versa
-		elseif (misc == L.GUN or misc == L.BOW or misc == L.CROSSBOW or misc == L.WAND) and isc ~= L.GUN and isc ~= L.BOW and isc ~= L.CROSSBOW and isc ~= L.WAND then
-			return true
-		elseif mies ~= equipSlot and (isc == L.GUN or isc == L.BOW or isc == L.CROSSBOW or isc == L.WAND) then
-			return true
-		elseif isc ~= misc and mies == equipSlot and misc ~= L.GUN and misc ~= L.BOW and misc ~= L.CROSSBOW and misc ~= L.WAND and (isc == L.GUN or isc == L.BOW or isc == L.CROSSBOW or isc == L.WAND) then
+		elseif (misc == L.GUN or misc == L.BOW or misc == L.CROSSBOW) and isc ~= L.GUN and isc ~= L.BOW and isc ~= L.CROSSBOW then
 			return true
 		else
 			return false
@@ -219,7 +216,11 @@ local function noTransmog(mic, misc, ic, isc, mies, ies, id)
 			return true
 		elseif (misc == L.ONEHSWORD or misc == L.ONEHAXE or misc == L.ONEHMACE) and (isc == L.TWOHMACE or isc == L.TWOHAXE or isc == L.TWOHSWORD or isc == L.DAGGER or isc == L.FIST or isc == L.WAND) then
 			return true
-		elseif (misc == L.GUN or misc == L.BOW or misc == L.CROSSBOW or misc == L.WAND) and isc ~= L.GUN and isc ~= L.BOW and isc ~= L.CROSSBOW and isc ~= L.WAND then
+		elseif (misc == L.GUN or misc == L.BOW or misc == L.CROSSBOW) and isc ~= L.GUN and isc ~= L.BOW and isc ~= L.CROSSBOW then
+			return true
+		elseif (misc ~= L.GUN and misc ~= L.BOW and misc ~= L.CROSSBOW) and (isc == L.GUN or isc == L.BOW or isc == L.CROSSBOW) then
+			return true
+		elseif misc ~= L.WAND and isc == WAND then
 			return true
 		else
 			return false
