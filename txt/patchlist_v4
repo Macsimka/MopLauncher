@@ -20,7 +20,7 @@
     },
     {
       "fileName": "pandawow-32.dll",
-      "hash": "9DDF4F25E0B6A28E0428F20687F365F0",
+      "hash": "378DBED7C370D5521528D8A5D7C188BF",
       "size": 219648,
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9wYW5kYXdvdy0zMi5kbGw="
     },
@@ -32,8 +32,8 @@
     },
     {
       "fileName": "pandawow-64.dll",
-      "hash": "4D57287951588E0A62A89532D6070E0A",
-      "size": 239104,
+      "hash": "7A97C1FC2E1ACFF0A6F3909305F3C6DD",
+      "size": 239616,
       "url": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01hY3NpbWthL01vcExhdW5jaGVyL21hc3Rlci9GaWxlcy9wYW5kYXdvdy02NC5kbGw="
     },
     {
